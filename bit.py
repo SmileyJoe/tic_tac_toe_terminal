@@ -14,13 +14,23 @@ class Bit:
     EIGHT = 0x0080
     NINE = 0x0100
 
+    POSITION_TWO = 0x000A
+
+    __value = 0
+
     def __init__(self):
         self.__value = self.ZERO
 
-    def set(self, position):
+    def set(self, position, shift=0):
+        if shift > 0:
+            position = position << shift
+
         self.__value |= position
 
-    def unset(self, position):
+    def unset(self, position, shift=0):
+        if shift > 0:
+            position = position << shift
+
         self.__value &= ~position
 
     def is_set(self, position):
@@ -28,3 +38,9 @@ class Bit:
 
     def log(self):
         pprint("{0:b}".format(self.__value))
+
+    def __str__(self):
+        return "{0:b}".format(self.__value)
+
+    def get_value(self):
+        return self.__value
