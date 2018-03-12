@@ -4,8 +4,8 @@ import random
 
 class Board:
 
-    PLAYER_X = 0
-    PLAYER_O = 1
+    PLAYER_X = 0x0000
+    PLAYER_O = 0x0001
 
     POSITION_IS_SET = Bit.POSITION_TWO
 
@@ -14,6 +14,16 @@ class Board:
               Bit.FOUR, Bit.FIVE, Bit.SIX,
               Bit.SEVEN, Bit.EIGHT, Bit.NINE]
     __full_mask = 0x03FF
+    __winning_vertical = 0x0124
+    __winning_horizontal = 0x0007
+    __winning_combo = [__winning_vertical,
+                       __winning_vertical >> 0x0001,
+                       __winning_vertical >> 0x0002,
+                       __winning_horizontal,
+                       __winning_horizontal << 0x0003,
+                       __winning_horizontal << 0x0006,
+                       0x0111,
+                       0x0054]
 
     __board = """
     {0}   |   {1}   |   {2}   
@@ -57,6 +67,21 @@ class Board:
         self.__update_positions(positions, self.__get_player_x(), 'x')
         self.__update_positions(positions, self.__get_player_o(), 'o')
         print (self.__board.format(*positions))
+
+    def get_winner(self):
+        if self.__is_winner(self.__get_player_x()):
+            return self.PLAYER_X
+        elif self.__is_winner(self.__get_player_o()):
+            return self.PLAYER_O
+        else:
+            return -1
+
+    def __is_winner(self, player_data):
+        for bit in self.__winning_combo:
+            if player_data & bit == bit:
+                return True
+
+        return False
 
     def __get_player_x(self):
         return self.__status.get_value() & self.__get_set()
