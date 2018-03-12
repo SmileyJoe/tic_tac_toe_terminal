@@ -7,8 +7,7 @@ class Board:
     PLAYER_X = 0x0000
     PLAYER_O = 0x0001
 
-    POSITION_IS_SET = Bit.POSITION_TWO
-
+    __position_set = Bit.POSITION_TWO
     __status = 0x0000
     __bits = [Bit.ONE, Bit.TWO, Bit.THREE,
               Bit.FOUR, Bit.FIVE, Bit.SIX,
@@ -56,7 +55,7 @@ class Board:
             else:
                 self.__status = Bit.unset(self.__status, bit)
 
-            self.__status = Bit.set(self.__status, bit, self.POSITION_IS_SET)
+            self.__status = Bit.set(self.__status, bit, self.__position_set)
             self.__set_player(player)
             return True
 
@@ -91,7 +90,7 @@ class Board:
         return (self.__status ^ self.__get_set()) & self.__full_mask
 
     def __get_set(self):
-        return self.__status >> self.POSITION_IS_SET
+        return self.__status >> self.__position_set
 
     def __update_positions(self, positions, player_data, icon):
         for i in range(0, 9):
