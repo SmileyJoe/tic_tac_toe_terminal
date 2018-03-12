@@ -7,22 +7,23 @@ class Board:
     PLAYER_X = 0x0000
     PLAYER_O = 0x0001
 
+    __player_bit = Bit.ONE
     __position_set = Bit.POSITION_TWO
     __status = 0x0000
-    __bits = [Bit.ONE, Bit.TWO, Bit.THREE,
-              Bit.FOUR, Bit.FIVE, Bit.SIX,
-              Bit.SEVEN, Bit.EIGHT, Bit.NINE]
+    __bits = [Bit.TWO, Bit.THREE, Bit.FOUR,
+              Bit.FIVE, Bit.SIX, Bit.SEVEN,
+              Bit.EIGHT, Bit.NINE, Bit.TEN]
     __full_mask = 0x03FF
-    __winning_vertical = 0x0124
-    __winning_horizontal = 0x0007
+    __winning_vertical = 0x0092
+    __winning_horizontal = 0x000E
     __winning_combo = [__winning_vertical,
                        __winning_vertical >> 0x0001,
                        __winning_vertical >> 0x0002,
                        __winning_horizontal,
                        __winning_horizontal << 0x0003,
                        __winning_horizontal << 0x0006,
-                       0x0111,
-                       0x0054]
+                       0x0222,
+                       0x00A8]
 
     __board = """
     {0}   |   {1}   |   {2}   
@@ -35,11 +36,14 @@ class Board:
     def __init__(self):
         self.__set_player(random.randint(0, 1))
 
-    def get_player(self):
-        if Bit.is_set(self.__status, Bit.ZERO):
+    def get_current_player(self):
+        if Bit.is_set(self.__status, self.__player_bit):
             return self.PLAYER_X
         else:
             return self.PLAYER_O
+
+    def next_move(self, position):
+        return self.move(self.get_current_player(), position)
 
     def move(self, player, position):
         if position not in range(0, 9):
@@ -56,7 +60,7 @@ class Board:
                 self.__status = Bit.unset(self.__status, bit)
 
             self.__status = Bit.set(self.__status, bit, self.__position_set)
-            self.__set_player(player)
+            self.__status = self.__status ^ 0x0001
             return True
 
     def draw(self):
@@ -100,6 +104,6 @@ class Board:
 
     def __set_player(self, player):
         if player == self.PLAYER_X:
-            self.__status = Bit.set(self.__status, Bit.ZERO)
+            self.__status = Bit.set(self.__status, self.__player_bit)
         else:
-            self.__status = Bit.unset(self.__status, Bit.ZERO)
+            self.__status = Bit.unset(self.__status, self.__player_bit)
