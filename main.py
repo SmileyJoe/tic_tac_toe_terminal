@@ -22,16 +22,19 @@ try:
 
         valid = False
         while not valid:
-            move = int(screen.getstr(5, len(play_message), 1))
+            try:
+                move = int(screen.getstr(5, len(play_message), 1))
 
-            if move in range(1, 10):
-                move = move - 1
-                valid = board.next_move(move)
+                if move in range(1, 10):
+                    move = move - 1
+                    valid = board.next_move(move)
 
-                if not valid:
-                    screen.addstr("That move is not allowed, please try again.")
-            else:
-                screen.addstr("Please choose a number between 1 and 9.")
+                    if not valid:
+                        screen.addstr("That move is not allowed, please try again.")
+                else:
+                    screen.addstr("Please choose a number between 1 and 9.")
+            except ValueError:
+                screen.addstr("Please enter a number.")
 
     screen.erase()
     screen.addstr(board.get_board())
