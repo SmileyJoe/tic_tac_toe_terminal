@@ -1,34 +1,53 @@
 from board import Board
+import curses
 
-board = Board()
-print(board.get_board())
+screen = curses.initscr()
+curses.cbreak()
 
-while board.get_winner() == -1 and board.is_available_move():
-    player = board.get_current_player()
+try:
+    board = Board()
 
-    if player == Board.PLAYER_X:
-        play_message = "Player X move: "
-    else:
-        play_message = "Player O move: "
+    while board.get_winner() == -1 and board.is_available_move():
+        screen.erase()
+        player = board.get_current_player()
 
-    valid = False
-    while not valid:
-        move = int(input(play_message))
+        screen.addstr(board.get_board())
 
-        if move in range(1, 10):
-            move = move - 1
-            valid = board.next_move(move)
-
-            if not valid:
-                print("That move is not allowed, please try again.")
+        if player == Board.PLAYER_X:
+            play_message = "Player X move: "
         else:
-            print("Please choose a number between 1 and 9.")
+            play_message = "Player O move: "
 
-    print(board.get_board())
+        screen.addstr(play_message)
 
-if board.get_winner() == -1:
-    print("It's a draw")
-elif board.get_winner() == Board.PLAYER_X:
-    print("Winner is player X")
-else:
-    print("Winner is player O")
+        valid = False
+        while not valid:
+            move = int(screen.getstr(5, len(play_message), 1))
+
+            if move in range(1, 10):
+                move = move - 1
+                valid = board.next_move(move)
+
+                if not valid:
+                    screen.addstr("That move is not allowed, please try again.")
+            else:
+                screen.addstr("Please choose a number between 1 and 9.")
+
+    screen.erase()
+    screen.addstr(board.get_board())
+    if board.get_winner() == -1:
+        screen.addstr("It's a draw")
+    elif board.get_winner() == Board.PLAYER_X:
+        screen.addstr("Winner is player X")
+    else:
+        screen.addstr("Winner is player O")
+
+    text_exit = "Press enter to exit."
+    screen.addstr("\n" + text_exit)
+    screen.refresh()
+    screen.getstr(6, len(text_exit), 0)
+
+finally:
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
