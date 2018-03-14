@@ -14,6 +14,7 @@ class Board:
               Bit.FIVE, Bit.SIX, Bit.SEVEN,
               Bit.EIGHT, Bit.NINE, Bit.TEN]
     __full_mask = 0x03FF
+    __full_mask_board = 0x01FF
     __winning_vertical = 0x0092
     __winning_horizontal = 0x000E
     __winning_combo = [__winning_vertical,
@@ -51,7 +52,7 @@ class Board:
 
         bit = self.__bits[position]
 
-        if Bit.is_set(self.__status, bit):
+        if Bit.is_set(self.__get_set(), bit):
             return False
         else:
             if player == self.PLAYER_X:
@@ -79,6 +80,9 @@ class Board:
             return self.PLAYER_O
         else:
             return -1
+
+    def is_available_move(self):
+        return self.__get_set() & self.__full_mask_board != self.__full_mask_board
 
     def __is_winner(self, player_data):
         for bit in self.__winning_combo:
