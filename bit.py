@@ -12,7 +12,7 @@ class Bit:
     NINE = 0x0100
     TEN = 0x0200
 
-    POSITION_TWO = 0x000B
+    POSITION_TWO = 0x000A
 
     @staticmethod
     def is_set(number, position):

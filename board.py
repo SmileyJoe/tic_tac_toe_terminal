@@ -14,7 +14,7 @@ class Board:
               Bit.FIVE, Bit.SIX, Bit.SEVEN,
               Bit.EIGHT, Bit.NINE, Bit.TEN]
     __full_mask = 0x03FF
-    __full_mask_board = 0x01FF
+    __full_mask_board = 0x03FE
     __winning_vertical = 0x0092
     __winning_horizontal = 0x000E
     __winning_combo = [__winning_vertical,
@@ -64,14 +64,14 @@ class Board:
             self.__status = self.__status ^ 0x0001
             return True
 
-    def draw(self):
+    def get_board(self):
         positions = []
         for i in range(0, 9):
             positions.append(' ')
 
         self.__update_positions(positions, self.__get_player_x(), 'x')
         self.__update_positions(positions, self.__get_player_o(), 'o')
-        print (self.__board.format(*positions))
+        return self.__board.format(*positions)
 
     def get_winner(self):
         if self.__is_winner(self.__get_player_x()):
@@ -111,3 +111,6 @@ class Board:
             self.__status = Bit.set(self.__status, self.__player_bit)
         else:
             self.__status = Bit.unset(self.__status, self.__player_bit)
+
+    def __log(self, data):
+        print("{0:b}".format(data))

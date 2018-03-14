@@ -1,7 +1,7 @@
 from board import Board
 
 board = Board()
-board.draw()
+print(board.get_board())
 
 while board.get_winner() == -1 and board.is_available_move():
     player = board.get_current_player()
@@ -24,10 +24,11 @@ while board.get_winner() == -1 and board.is_available_move():
         else:
             print("Please choose a number between 1 and 9.")
 
-    board.draw()
+    print(board.get_board())
 
-# We do the reverse as we want the previous move was the winning player
-if board.get_current_player() == Board.PLAYER_O:
+if board.get_winner() == -1:
+    print("It's a draw")
+elif board.get_winner() == Board.PLAYER_X:
     print("Winner is player X")
 else:
     print("Winner is player O")
