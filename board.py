@@ -15,7 +15,7 @@ class Board:
               Bit.EIGHT, Bit.NINE, Bit.TEN]
     __full_mask = 0x03FF
     __full_mask_board = 0x03FE
-    __winning_vertical = 0x0092
+    __winning_vertical = 0x0248
     __winning_horizontal = 0x000E
     __winning_combo = [__winning_vertical,
                        __winning_vertical >> 0x0001,
