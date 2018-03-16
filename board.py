@@ -25,6 +25,7 @@ class Board:
                        __winning_horizontal << 0x0006,
                        0x0222,
                        0x00A8]
+    _ai_player = -1
 
     __board = """    {0}   |   {1}   |   {2}   
 -------------------------
@@ -44,6 +45,17 @@ class Board:
 
     def next_move(self, position):
         return self.move(self.get_current_player(), position)
+
+    def ai_move(self):
+        return self.move_random()
+
+    def move_random(self):
+        if self.is_available_move():
+            while not self.next_move(random.randint(0, 9)):
+                found = True
+            return True
+        else:
+            return False
 
     def move(self, player, position):
         if position not in range(0, 9):
@@ -82,6 +94,17 @@ class Board:
 
     def is_available_move(self):
         return self.__get_set() & self.__full_mask_board != self.__full_mask_board
+
+    def is_ai_player(self):
+        return self.get_current_player() == self.ai_player
+
+    @property
+    def ai_player(self):
+        return self._ai_player
+
+    @ai_player.setter
+    def ai_player(self, value):
+        self._ai_player = value
 
     def __is_winner(self, player_data):
         for bit in self.__winning_combo:

@@ -6,35 +6,39 @@ curses.cbreak()
 
 try:
     board = Board()
+    board.ai_player = Board.PLAYER_X
 
     while board.get_winner() == -1 and board.is_available_move():
         screen.erase()
-        player = board.get_current_player()
-
-        screen.addstr(board.get_board())
-
-        if player == Board.PLAYER_X:
-            play_message = "Player X move: "
+        if board.is_ai_player():
+            board.ai_move()
         else:
-            play_message = "Player O move: "
+            player = board.get_current_player()
 
-        screen.addstr(play_message)
+            screen.addstr(board.get_board())
 
-        valid = False
-        while not valid:
-            try:
-                move = int(screen.getstr(5, len(play_message), 1))
+            if player == Board.PLAYER_X:
+                play_message = "Player X move: "
+            else:
+                play_message = "Player O move: "
 
-                if move in range(1, 10):
-                    move = move - 1
-                    valid = board.next_move(move)
+            screen.addstr(play_message)
 
-                    if not valid:
-                        screen.addstr("That move is not allowed, please try again.")
-                else:
-                    screen.addstr("Please choose a number between 1 and 9.")
-            except ValueError:
-                screen.addstr("Please enter a number.")
+            valid = False
+            while not valid:
+                try:
+                    move = int(screen.getstr(5, len(play_message), 1))
+
+                    if move in range(1, 10):
+                        move = move - 1
+                        valid = board.next_move(move)
+
+                        if not valid:
+                            screen.addstr("That move is not allowed, please try again.")
+                    else:
+                        screen.addstr("Please choose a number between 1 and 9.")
+                except ValueError:
+                    screen.addstr("Please enter a number.")
 
     screen.erase()
     screen.addstr(board.get_board())
