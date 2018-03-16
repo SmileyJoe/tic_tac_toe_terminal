@@ -9,7 +9,7 @@ class Board:
 
     __player_bit = Bit.ONE
     __position_set = Bit.POSITION_TWO
-    __status = 0x0000
+    _status = 0x0000
     __bits = [Bit.TWO, Bit.THREE, Bit.FOUR,
               Bit.FIVE, Bit.SIX, Bit.SEVEN,
               Bit.EIGHT, Bit.NINE, Bit.TEN]
@@ -38,10 +38,14 @@ class Board:
         self.__set_player(random.randint(0, 1))
 
     def get_current_player(self):
-        if Bit.is_set(self.__status, self.__player_bit):
-            return self.PLAYER_X
+        return self.get_player(self._status)
+
+    @staticmethod
+    def get_player(data):
+        if Bit.is_set(data, Board.__player_bit):
+            return Board.PLAYER_X
         else:
-            return self.PLAYER_O
+            return Board.PLAYER_O
 
     def next_move(self, position):
         return self.move(self.get_current_player(), position)
@@ -67,12 +71,12 @@ class Board:
             return False
         else:
             if player == self.PLAYER_X:
-                self.__status = Bit.set(self.__status, bit)
+                self._status = Bit.set(self._status, bit)
             else:
-                self.__status = Bit.unset(self.__status, bit)
+                self._status = Bit.unset(self._status, bit)
 
-            self.__status = Bit.set(self.__status, bit, self.__position_set)
-            self.__status = self.__status ^ 0x0001
+            self._status = Bit.set(self._status, bit, self.__position_set)
+            self._status = self._status ^ 0x0001
             return True
 
     def get_board(self):
@@ -85,9 +89,9 @@ class Board:
         return self.__board.format(*positions)
 
     def get_winner(self):
-        if self.__is_winner(self.__get_player_x()):
+        if self.is_winner(self.__get_player_x()):
             return self.PLAYER_X
-        elif self.__is_winner(self.__get_player_o()):
+        elif self.is_winner(self.__get_player_o()):
             return self.PLAYER_O
         else:
             return -1
@@ -98,6 +102,13 @@ class Board:
     def is_ai_player(self):
         return self.get_current_player() == self.ai_player
 
+    def reset(self):
+        self._status = 0x0000
+
+    @property
+    def status(self):
+        return self._status
+
     @property
     def ai_player(self):
         return self._ai_player
@@ -106,21 +117,22 @@ class Board:
     def ai_player(self, value):
         self._ai_player = value
 
-    def __is_winner(self, player_data):
-        for bit in self.__winning_combo:
+    @staticmethod
+    def is_winner(player_data):
+        for bit in Board.__winning_combo:
             if player_data & bit == bit:
                 return True
 
         return False
 
     def __get_player_x(self):
-        return self.__status & self.__get_set()
+        return self._status & self.__get_set()
 
     def __get_player_o(self):
-        return (self.__status ^ self.__get_set()) & self.__full_mask
+        return (self._status ^ self.__get_set()) & self.__full_mask
 
     def __get_set(self):
-        return self.__status >> self.__position_set
+        return self._status >> self.__position_set
 
     def __update_positions(self, positions, player_data, icon):
         for i in range(0, 9):
@@ -130,9 +142,9 @@ class Board:
 
     def __set_player(self, player):
         if player == self.PLAYER_X:
-            self.__status = Bit.set(self.__status, self.__player_bit)
+            self._status = Bit.set(self._status, self.__player_bit)
         else:
-            self.__status = Bit.unset(self.__status, self.__player_bit)
+            self._status = Bit.unset(self._status, self.__player_bit)
 
     def __log(self, data):
         print("{0:b}".format(data))
