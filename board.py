@@ -1,3 +1,7 @@
+import json
+
+import operator
+
 from bit import Bit
 import random
 
@@ -7,6 +11,7 @@ class Board:
     PLAYER_X = 0x0000
     PLAYER_O = 0x0001
 
+    __data = None
     __player_bit = Bit.ONE
     __position_set = Bit.POSITION_TWO
     _status = 0x0000
@@ -35,6 +40,8 @@ class Board:
 """
 
     def __init__(self):
+        with open('./data/data.json') as json_data:
+            self.__data = json.load(json_data)
         self.__set_player(random.randint(0, 1))
 
     def get_current_player(self):
@@ -51,7 +58,15 @@ class Board:
         return self.move(self.get_current_player(), position)
 
     def ai_move(self):
-        return self.move_random()
+        temp = str(self.status)
+        if temp in self.__data:
+            move_set = self.__data.get(temp)
+            sorted_move_set = sorted(move_set, key=move_set.get, reverse=True)
+            next_status = int(sorted_move_set[0])
+            next_move = (self.status & self.__full_mask_board) ^ (next_status & self.__full_mask_board)
+            return self.next_move(self.__bits.index(next_move))
+        else:
+            return self.move_random()
 
     def move_random(self):
         if self.is_available_move():
@@ -104,6 +119,7 @@ class Board:
 
     def reset(self):
         self._status = 0x0000
+        self.__set_player(random.randint(0, 1))
 
     @property
     def status(self):

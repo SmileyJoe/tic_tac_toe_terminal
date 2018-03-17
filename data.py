@@ -6,7 +6,7 @@ from board import Board
 board = Board()
 data = {}
 
-for i in range(0, 10000):
+for i in range(0, 100000):
     board.reset()
     temp = []
     while board.is_available_move() and board.get_winner() == -1:
