@@ -1,5 +1,7 @@
 import json
 
+import operator
+
 from board import Board
 
 board = Board()
@@ -47,6 +49,11 @@ for i in range(0, 1000000):
         else:
             data[item] = {}
             data[item][next_item] = (score, score, 1)
+
+for item in data:
+    item_data = data.get(item)
+    temp = sorted(item_data.items(), key=operator.itemgetter(1), reverse=True)
+    data[item] = temp
 
 json_data = json.dumps(data)
 
