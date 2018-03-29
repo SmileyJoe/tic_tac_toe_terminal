@@ -61,8 +61,8 @@ class Board:
         temp = str(self.status)
         if temp in self.__data:
             move_set = self.__data.get(temp)
-            sorted_move_set = sorted(move_set, key=move_set.get, reverse=True)
-            next_status = int(sorted_move_set[0])
+            sorted_move_set = sorted(move_set.items(), key=operator.itemgetter(1), reverse=True)
+            next_status = int(sorted_move_set[0][0])
             next_move = (self.status & self.__full_mask_board) ^ (next_status & self.__full_mask_board)
             return self.next_move(self.__bits.index(next_move))
         else:
