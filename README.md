@@ -31,6 +31,12 @@ This score is then added to the cumulative score for that move from that board s
 
 The move sets are then sorted by this average with the higher average being the higher chance of leading to a winning move/being a winning move.
 
+### Checking a winner ###
+
+Because we are dealing with the bits, we can make simple checks to see if there is a winner, by keeping a list of board states that would be winning and using them as a mask on the current state, we can see if they are all set and find a winner.
+
+For example, we can say the winning combo for the first vertical row is `1001001` or `73`, from that we can take the users moves, eg, `110001` or `49` meaning they have played positions 1, 5 and 6, by using the `&` operator we can mask the sate and see that the positions aren't set.
+
 ## Why do this ##
 
 There where a few personal challenges in this for me:
