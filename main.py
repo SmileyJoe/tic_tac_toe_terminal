@@ -8,9 +8,31 @@ curses.cbreak()
 # everything is wrapped in a try so that we can reset the state of the terminal
 # if the script crashes for any reason
 try:
-    board = Board()
-    board.ai_player = Board.PLAYER_X
+    screen.erase()
+    # get the player count
+    player_message = "How many players (1/2)? "
+    screen.addstr(player_message)
+    valid = False
 
+    # keep asking until we get valid input
+    while not valid:
+        try:
+            player_count = int(screen.getstr(0, len(player_message), 1))
+
+            if player_count in range(1, 3):
+                valid = True
+            else:
+                screen.addstr("Please enter either 1 or 2.")
+        except ValueError:
+            screen.addstr("Please enter either 1 or 2.")
+
+    board = Board()
+
+    # set the ai player if needed
+    if player_count == 1:
+        board.ai_player = Board.PLAYER_X
+
+    screen.erase()
     # continue while there is no winner and there are moves available
     while board.get_winner() == -1 and board.is_available_move():
         # clear the screen on every turn so the new board can be drawn
